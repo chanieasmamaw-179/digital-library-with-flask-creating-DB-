@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New Author</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Add a New Author</h1>
+
+        <!-- Flash messages for user feedback -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Author Form -->
+        <form action="{{ url_for('add_author') }}" method="POST">
+            <div class="form-group">
+                <label for="name">Name:</label>
+                <input type="text" name="name" class="form-control" required aria-label="Author Name">
+            </div>
+            <div class="form-group">
+                <label for="birth_date">Birth Date:</label>
+                <input type="date" name="birth_date" class="form-control" aria-label="Birth Date" required>
+            </div>
+            <div class="form-group">
+                <label for="date_of_death">Date of Death (optional):</label>
+                <input type="date" name="date_of_death" class="form-control" aria-label="Date of Death">
+            </div>
+            <button type="submit" class="btn btn-primary">Add Author</button>
+        </form>
+
+        <!-- Back to Home Button -->
+        <a href="{{ url_for('home') }}" class="btn btn-secondary mt-3">Back to Home</a>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

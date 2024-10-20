@@ -25,15 +25,17 @@
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
-        <a href="{{ url_for('add_book') }}" class="btn btn-success mb-3">Add New Book</a>
-        <a href="{{ url_for('add_author') }}" class="btn btn-info mb-3">Add New Author</a>
+        <div class="mb-3">
+            <a href="{{ url_for('add_book') }}" class="btn btn-success">Add New Book</a>
+            <a href="{{ url_for('add_author') }}" class="btn btn-info">Add New Author</a>
+        </div>
 
         <ul class="list-group">
             {% for book in books %}
-                <li class="list-group-item">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
                     <a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a> by {{ book.author.name }}
                     <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this book?');">
-                        <button type="submit" class="btn btn-danger btn-sm float-right" aria-label="Delete {{ book.title }}">Delete</button>
+                        <button type="submit" class="btn btn-danger btn-sm" aria-label="Delete {{ book.title }}">Delete</button>
                     </form>
                 </li>
             {% else %}
@@ -41,5 +43,9 @@
             {% endfor %}
         </ul>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
