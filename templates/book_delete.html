@@ -13,11 +13,21 @@
         <h3>By: {{ book.author.name }}</h3> <!-- Assuming book has a relationship to author -->
         <p><strong>Published Date:</strong> {{ book.published_date.strftime('%B %d, %Y') if book.published_date else 'Not available' }}</p>
 
-        <a href="{{ url_for('add_book') }}" class="btn btn-primary">Add New Book</a>
-        <a href="{{ url_for('home') }}" class="btn btn-secondary">Back to Home</a>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
 
-        <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" style="display:inline;">
-            <button type="submit" class="btn btn-danger">Delete Book</button>
+        <a href="{{ url_for('add_book') }}" class="btn btn-primary">Add New Book</a>
+        <a href="{{ url_for('home') }}" class="btn btn-secondary mt-2">Back to Home</a>
+
+        <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this book?');">
+            <button type="submit" class="btn btn-danger mt-2" aria-label="Delete Book">Delete Book</button>
         </form>
     </div>
 

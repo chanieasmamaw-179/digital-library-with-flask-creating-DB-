@@ -3,90 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Digital Library</title>
-    <!-- Bootstrap CSS -->
+    <title>Home - Digital Library</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-        h1, h2 {
-            color: #343a40;
-        }
-        .container {
-            margin-top: 30px;
-        }
-        .flash-message {
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="text-center">Welcome to the Digital Library</h1>
+    <div class="container mt-5">
+        <h1>Digital Library</h1>
 
-        <!-- Flash messages -->
         {% with messages = get_flashed_messages() %}
             {% if messages %}
-                <div class="flash-message">
-                    <div class="alert alert-info">
-                        <ul>
-                            {% for message in messages %}
-                                <li>{{ message }}</li>
-                            {% endfor %}
-                        </ul>
-                    </div>
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
                 </div>
             {% endif %}
         {% endwith %}
 
-        <!-- Search form -->
-        <form action="{{ url_for('home') }}" method="GET" class="form-inline mb-4">
-            <input type="text" name="search" class="form-control mr-2" placeholder="Search for a book or author..." value="{{ request.args.get('search', '') }}">
+        <form class="form-inline mb-3" method="GET" action="{{ url_for('home') }}">
+            <input type="text" name="search" class="form-control mr-2" placeholder="Search for books or authors" value="{{ request.args.get('search', '') }}">
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
-        <h2>Books List</h2>
-        {% if books %}
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Title</th>
-                        <th>Author</th>
-                        <th>Published Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for book in books %}
-                        <tr>
-                            <td><a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a></td>
-                            <td><a href="{{ url_for('author_detail', author_id=book.author.id) }}">{{ book.author.name }}</a></td>
-                            <td>{{ book.published_date.strftime('%B %d, %Y') if book.published_date else 'N/A' }}</td>
-                            <td>
-                                <!-- Delete button -->
-                                <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" style="display:inline;">
-                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this book?');">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <div class="alert alert-warning" role="alert">No books found.</div>
-        {% endif %}
+        <a href="{{ url_for('add_book') }}" class="btn btn-success mb-3">Add New Book</a>
+        <a href="{{ url_for('add_author') }}" class="btn btn-info mb-3">Add New Author</a>
 
-        <!-- Links to add new author and book -->
-        <div class="text-center">
-            <a href="{{ url_for('add_author') }}" class="btn btn-success">Add a New Author</a>
-            <a href="{{ url_for('add_book') }}" class="btn btn-primary">Add a New Book</a>
-        </div>
+        <ul class="list-group">
+            {% for book in books %}
+                <li class="list-group-item">
+                    <a href="{{ url_for('book_detail', book_id=book.id) }}">{{ book.title }}</a> by {{ book.author.name }}
+                    <form action="{{ url_for('delete_book', book_id=book.id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this book?');">
+                        <button type="submit" class="btn btn-danger btn-sm float-right" aria-label="Delete {{ book.title }}">Delete</button>
+                    </form>
+                </li>
+            {% else %}
+                <li class="list-group-item">No books found. Consider adding some books!</li>
+            {% endfor %}
+        </ul>
     </div>
-
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

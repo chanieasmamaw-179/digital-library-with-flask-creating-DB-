@@ -1,9 +1,16 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from models import db, Author, Book
+from flask_wtf import FlaskForm
+from wtforms import StringField, DateField, SubmitField, validators
 from datetime import datetime
 import secrets
 import os
 
+class AuthorForm(FlaskForm):
+    name = StringField('Name', [validators.DataRequired(), validators.Length(min=1, max=100)])
+    birth_date = DateField('Birth Date', format='%Y-%m-%d', validators=[validators.Optional()])
+    date_of_death = DateField('Date of Death', format='%Y-%m-%d', validators=[validators.Optional()])
+    submit = SubmitField('Add Author')
 app = Flask(__name__)
 
 # Set the secret key
@@ -43,13 +50,22 @@ def author_detail(author_id):
     author = Author.query.get_or_404(author_id)  # Fetch the author from the database
     return render_template('author_detail.html', author=author)  # Pass the author object to the template
 
+
 @app.route('/add_author', methods=['GET', 'POST'])
 def add_author():
-    if request.method == 'POST':
-        # Logic to add author goes here
-        flash('Author added successfully!')
-        return redirect(url_for('home'))
-    return render_template('add_author.html')  # No author context needed
+    form = AuthorForm()
+    if form.validate_on_submit():
+        try:
+            new_author = Author(name=form.name.data, birth_date=form.birth_date.data, date_of_death=form.date_of_death.data)
+            db.session.add(new_author)
+            db.session.commit()
+            flash('Author added successfully!')
+            return redirect(url_for('home'))
+        except Exception as e:
+            db.session.rollback()  # Rollback in case of error
+            flash(f'An error occurred: {str(e)}')  # Show error message
+
+    return render_template('add_author.html', form=form)
 
 
 @app.route('/add_book', methods=['GET', 'POST'])

@@ -3,27 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add New Author</title>
+    <title>Add New Book</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
     <div class="container mt-5">
-        <h1>Add a New Author</h1>
+        <h1>Add a New Book</h1>
 
-        <form action="{{ url_for('add_author') }}" method="POST">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert alert-info">
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <form action="{{ url_for('add_book') }}" method="POST">
             <div class="form-group">
-                <label for="name">Name:</label>
-                <input type="text" name="name" class="form-control" required>
+                <label for="title">Title:</label>
+                <input type="text" name="title" class="form-control" required aria-label="Book Title">
             </div>
             <div class="form-group">
-                <label for="birth_date">Birth Date:</label>
-                <input type="date" name="birth_date" class="form-control">
+                <label for="author_id">Author:</label>
+                <select name="author_id" class="form-control" required aria-label="Select Author">
+                    <option value="">Select Author</option>
+                    {% for author in authors %}
+                        <option value="{{ author.id }}">{{ author.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
             <div class="form-group">
-                <label for="date_of_death">Date of Death:</label>
-                <input type="date" name="date_of_death" class="form-control">
+                <label for="published_date">Published Date:</label>
+                <input type="date" name="published_date" class="form-control" aria-label="Published Date">
             </div>
-            <button type="submit" class="btn btn-primary">Add Author</button>
+            <button type="submit" class="btn btn-primary">Add Book</button>
         </form>
 
         <a href="{{ url_for('home') }}" class="btn btn-secondary mt-3">Back to Home</a>
